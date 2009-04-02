@@ -1,0 +1,89 @@
+Clojure POM for Maven2
+======================
+
+Q: A Maven POM for Clojure ?!? 
+
+> Yes. Don't run away with your hair on fire. This is only used for dependency
+management and is a nice easy way to create a repl script.
+
+Q: How do I get started ?
+
+> It's easy. Just follow the steps below and you'll
+have access to tens of thousands of Java libraries inside Clojure
+
+* Install Maven2 [ http://maven.apache.org ]
+
+* Install Clojure, Contrib & POM with maven. You can find maven-friendly
+  repos on my github account.
+
+    git clone git://github.com/dysinger/clojure.git
+    cd clojure
+    git checkout -b stable 20090320
+    mvn install
+    cd ..
+    git clone git://github.com/dysinger/clojure-contrib.git
+    cd clojure-contrib
+    mvn install
+    cd ..
+    git clone git://github.com/dysinger/clojure-pom.git
+    cd clojure-pom
+    mvn install
+    cd ..
+
+* Now create a new clojure project.  I do it like this.
+
+    mkdir my-project
+    cd my-project
+    cat >pom.xml <<\THEEND
+    <?xml version="1.0" encoding="UTF-8"?>
+    <project xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+            http://maven.apache.org/maven-v4_0_0.xsd">
+        <modelVersion>4.0.0</modelVersion>
+        <name>My Awesome Clojure Project</name>
+        <groupId>org.myorg</groupId>
+        <artifactId>myproject</artifactId>
+        <packaging>jar</packaging>
+        <version>1.0-SNAPSHOT</version>
+        <parent>
+            <groupId>org.clojure</groupId>
+            <artifactId>clojure-pom</artifactId>
+            <version>20090401</version>
+        </parent>
+        <dependencies>
+            <!-- put your runtime deps. here: -->
+            <dependency>
+                <groupId>commons-math</groupId>
+                <artifactId>commons-math</artifactId>
+                <version>1.2</version>
+                <scope>runtime</scope>
+            </dependency>
+        </dependencies>
+    </project>
+    THEEND
+    mkdir src
+    cat >src/hello.clj <<\THEEND
+    (ns hello)
+        (import '(org.apache.commons.math.random JDKRandomGenerator))
+    (defn main []
+    (println "Hello from org.apache.commons.math.random: "
+        (.nextInt (JDKRandomGenerator.))))
+    THEEND
+
+* Now run mvn to setup your dependencies and the repl script
+
+    mvn
+    chmod 755 bin/*
+
+* Now try out the repl script
+
+    bin/myproject
+    Clojure
+    user=> (use 'hello)
+    nil
+    user=> (main)
+    Hello from org.apache.commons.math.random:  -130262244
+    nil
+
+* Wute! You only have to run 'mvn' when your dependencies change.
