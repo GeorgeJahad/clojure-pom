@@ -1,7 +1,7 @@
 Clojure POM for Maven2
 ======================
 
-Q: A Maven POM for Clojure ?!? 
+Q: A Maven POM for Clojure ?!?
 
 > Yes. Don't run away with your hair on fire. This is only used for dependency
 management and is a nice easy way to create a repl script.
@@ -87,3 +87,21 @@ have access to tens of thousands of Java libraries inside Clojure
     nil
 
 * Wute! You only have to run 'mvn' when your dependencies change.
+
+Q: How can I use this in Emacs / Slime ?
+
+> You need to update your .emacs file below your clojure / swank
+setup. I add a function that lets you pick the clojure "binary" (script).
+
+    (defun clojure-repl (path)
+      "Set the clojure repl script and refresh slime-lisp-implementations"
+      (interactive "GPath: ")
+      (setq swank-clojure-binary path)
+      (setq slime-lisp-implementations
+            (cons `(clojure ,(swank-clojure-cmd) :init swank-clojure-init)
+                  (remove-if #'(lambda (x)
+                                 (eq (car x) 'clojure))
+                             slime-lisp-implementations))))
+
+Now you can change your SLIME's classpath as you work on different
+modules in different SLIME sessions.  WIN!
