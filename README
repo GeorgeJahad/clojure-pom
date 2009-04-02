@@ -64,11 +64,11 @@ have access to tens of thousands of Java libraries inside Clojure
     THEEND
     mkdir src
     cat >src/hello.clj <<\THEEND
-    (ns hello)
-        (import '(org.apache.commons.math.random JDKRandomGenerator))
+    (ns hello
+      (import '(org.apache.commons.math.random JDKRandomGenerator)))
     (defn main []
-    (println "Hello from org.apache.commons.math.random: "
-        (.nextInt (JDKRandomGenerator.))))
+        (println "Hello from org.apache.commons.math.random: "
+                 (.nextInt (JDKRandomGenerator.))))
     THEEND
 
 * Now run mvn to setup your dependencies and the repl script
