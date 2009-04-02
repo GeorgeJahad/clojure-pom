@@ -4,7 +4,8 @@ Clojure POM for Maven2
 Q: A Maven POM for Clojure ?!?
 
 > Yes. Don't run away with your hair on fire. This is only used for dependency
-management and is a nice easy way to create a repl script.
+management and is a nice easy way to create a repl script.  You only have to
+run 'mvn' when your dependencies change.
 
 Q: How do I get started ?
 
@@ -86,7 +87,7 @@ have access to tens of thousands of Java libraries inside Clojure
     Hello from org.apache.commons.math.random:  -130262244
     nil
 
-* Wute! You only have to run 'mvn' when your dependencies change.
+* Wute! Remember: You only have to run 'mvn' when your dependencies change.
 
 Q: How can I use this in Emacs / Slime ?
 
