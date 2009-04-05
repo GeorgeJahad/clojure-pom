@@ -32,7 +32,7 @@
           <programs>
             <program>
               <mainClass>clojure.lang.Repl</mainClass>
-              <name>${project.artifactId}</name>
+              <name>${project.artifactId}-repl</name>
             </program>
           </programs>
         </configuration>
