@@ -16,7 +16,7 @@
         <directory>src</directory>
       </resource>
     </resources>
-    <outputDirectory>.mvn</outputDirectory>
+    <outputDirectory>classes</outputDirectory>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
