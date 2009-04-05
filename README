@@ -50,7 +50,7 @@ have access to tens of thousands of Java libraries inside Clojure
         <parent>
             <groupId>org.clojure</groupId>
             <artifactId>clojure-pom</artifactId>
-            <version>20090401</version>
+            <version>20090405</version>
         </parent>
         <dependencies>
             <!-- put your runtime deps. here: -->

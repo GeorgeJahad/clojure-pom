@@ -7,7 +7,7 @@
   <name>Clojure Maven POM</name>
   <groupId>org.clojure</groupId>
   <artifactId>clojure-pom</artifactId>
-  <version>20090401</version>
+  <version>20090405</version>
   <packaging>pom</packaging>
   <build>
     <defaultGoal>process-resources</defaultGoal>
