@@ -4,16 +4,23 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <prerequisites>
+    <maven>2.1.0</maven>
+  </prerequisites>
   <name>Clojure Maven POM</name>
-  <groupId>org.clojure</groupId>
+  <groupId>clojure</groupId>
   <artifactId>clojure-pom</artifactId>
-  <version>20090405</version>
+  <version>20090412</version>
   <packaging>pom</packaging>
   <build>
-    <defaultGoal>process-resources</defaultGoal>
+    <sourceDirectory>src</sourceDirectory>
     <resources>
       <resource>
-        <directory>src</directory>
+        <directory>${project.build.sourceDirectory}</directory>
+        <filtering>false</filtering>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
       </resource>
     </resources>
     <outputDirectory>classes</outputDirectory>
@@ -23,7 +30,9 @@
         <artifactId>appassembler-maven-plugin</artifactId>
         <configuration>
           <assembleDirectory>.</assembleDirectory>
-          <configurationDirectory>src</configurationDirectory>
+          <configurationDirectory>
+            ${project.build.sourceDirectory}
+          </configurationDirectory>
           <repositoryName>lib</repositoryName>
           <repositoryLayout>flat</repositoryLayout>
           <includeConfigurationDirectoryInClasspath>
@@ -45,16 +54,32 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
     </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>clojure</groupId>
+          <artifactId>clojure-maven-plugin</artifactId>
+          <version>20090412</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
   <dependencies>
     <dependency>
-      <groupId>org.clojure</groupId>
-      <artifactId>clojure-lang</artifactId>
+      <groupId>clojure</groupId>
+      <artifactId>clojure</artifactId>
       <version>20090320</version>
     </dependency>
     <dependency>
-      <groupId>org.clojure</groupId>
+      <groupId>clojure</groupId>
       <artifactId>clojure-contrib</artifactId>
       <version>SNAPSHOT</version>
     </dependency>
