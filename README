@@ -12,9 +12,11 @@ Q: How do I get started ?
 > It's easy. Just follow the steps below and you'll
 have access to tens of thousands of Java libraries inside Clojure
 
-* Install Maven2 [ http://maven.apache.org ]
+* Make sure you have Java6 on your box
 
-* Install Clojure, Contrib & POM with maven. You can find maven-friendly
+* Install Maven 2.1.0 [ http://maven.apache.org ]
+
+* Install Clojure, Contrib, Plugin & POM with maven. You can find maven-friendly
   repos on my github account.
 
 git clone git://github.com/dysinger/clojure.git
@@ -46,16 +48,19 @@ cat >pom.xml <<\THEEND
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <name>My Awesome Clojure Project</name>
-  <groupId>myorg</groupId>
-  <artifactId>myproj</artifactId>
-  <packaging>jar</packaging>
-  <version>SNAPSHOT</version>
+  <prerequisites>
+    <maven>2.1.0</maven>
+  </prerequisites>
   <parent>
     <groupId>clojure</groupId>
     <artifactId>clojure-pom</artifactId>
     <version>20090412</version>
   </parent>
+  <name>My Awesome Clojure Project</name>
+  <groupId>myorg</groupId>
+  <artifactId>myproj</artifactId>
+  <packaging>jar</packaging>
+  <version>SNAPSHOT</version>
   <build>
     <!-- optional: precompile some clojure -->
     <plugins>
