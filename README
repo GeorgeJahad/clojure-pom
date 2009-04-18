@@ -29,7 +29,7 @@ cd ..
 
 * Now create a new clojure project.  You can create maven archetypes
   if your maven-fu is brown-belt or above.
-  Sometimes good ol' hear files are easier. I do it like this.
+  Sometimes good ol' 'here' files are easier. I do it like this.
 
 mkdir my-project
 cd my-project
@@ -88,7 +88,8 @@ cat >src/myorg/myproj/hello.clj <<\THEEND
     (.nextInt (JDKRandomGenerator.))))
 THEEND
 
-mvn install
+mvn process-resources ; # <- seet target/dependencies ?!
+mvn install ; # <- see it compiled your clojure ?!
 
 Q: How can I use this in Emacs / Slime ?
 
