@@ -89,8 +89,8 @@ cat >src/myorg/myproj/hello.clj <<\THEEND
 THEEND
 
 mvn process-resources ; # <- now your are ready for emacs slime
-
-mvn install           ; # <- see it compile your clojure code
+mvn compile           ; # <- see it compile your clojure code
+mvn install           ; # <- install a jar for other components
 
 Q: How can I use this in Emacs / Slime ?
 
