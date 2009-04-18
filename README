@@ -4,32 +4,22 @@ Clojure POM for Maven2
 Q: A Maven POM for Clojure ?!?
 
 > Yes. Don't run away with your hair on fire. This is only used for dependency
-management and is a nice easy way to create a repl script. (and optionaly to
-compile clojure into java classes).
+management (and optionaly AOT compile clojure into java classes).
 
 Q: How do I get started ?
 
 > It's easy. Just follow the steps below and you'll
 have access to tens of thousands of Java libraries inside Clojure
 
-* Make sure you have Java6 on your box
+* Make sure you have > Java5 on your box
 
-* Install Maven 2.1.0 [ http://maven.apache.org ]
+* Install Maven [ http://maven.apache.org ]
 
-* Install Clojure, Contrib, Plugin & POM with maven. You can find maven-friendly
-  repos on my github account.
+* Install Clojure & Clojure POM with git & maven. 
+  You can find maven-friendly repos on my github account.
 
 git clone git://github.com/dysinger/clojure.git
 cd clojure
-git checkout -b stable 20090320
-mvn install
-cd ..
-git clone git://github.com/dysinger/clojure-contrib.git
-cd clojure-contrib
-mvn install
-cd ..
-git clone git://github.com/dysinger/clojure-maven-plugin.git
-cd clojure-maven-plugin
 mvn install
 cd ..
 git clone git://github.com/dysinger/clojure-pom.git
@@ -37,7 +27,9 @@ cd clojure-pom
 mvn install
 cd ..
 
-* Now create a new clojure project.  I do it like this.
+* Now create a new clojure project.  You can create maven archetypes
+  if your maven-fu is brown-belt or above.
+  Sometimes good ol' hear files are easier. I do it like this.
 
 mkdir my-project
 cd my-project
@@ -48,33 +40,31 @@ cat >pom.xml <<\THEEND
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <prerequisites>
-    <maven>2.1.0</maven>
-  </prerequisites>
   <parent>
     <groupId>clojure</groupId>
     <artifactId>clojure-pom</artifactId>
-    <version>20090412</version>
+    <version>1.0-SNAPSHOT</version>
   </parent>
-  <name>My Awesome Clojure Project</name>
   <groupId>myorg</groupId>
   <artifactId>myproj</artifactId>
-  <packaging>jar</packaging>
-  <version>SNAPSHOT</version>
+  <name>${artifactId}</name>
+  <version>${parent.version}</version>
   <build>
     <!-- optional: precompile some clojure -->
     <plugins>
       <plugin>
-        <groupId>clojure</groupId>
-        <artifactId>clojure-maven-plugin</artifactId>
+        <artifactId>maven-antrun-plugin</artifactId>
         <configuration>
-          <namespaces>
-            <namespace>myorg.myproj.hello</namespace>
-          </namespaces>
+          <tasks>
+            <java fork="true"
+                  classname="clojure.lang.Compile"
+                  classpathref="maven.compile.classpath">
+              <sysproperty key="clojure.compile.path"
+                           value="${project.build.outputDirectory}" />
+              <arg value="myorg.myproj.hello" />
+            </java>
+          </tasks>
         </configuration>
-        <executions>
-          <execution><goals><goal>compile</goal></goals></execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
@@ -88,6 +78,7 @@ cat >pom.xml <<\THEEND
   </dependencies>
 </project>
 THEEND
+
 mkdir -p src/myorg/myproj
 cat >src/myorg/myproj/hello.clj <<\THEEND
 (ns myorg.myproj.hello
@@ -97,43 +88,32 @@ cat >src/myorg/myproj/hello.clj <<\THEEND
     (.nextInt (JDKRandomGenerator.))))
 THEEND
 
-* Now run mvn to setup your dependencies & the repl script
-
-mvn process-resources
-chmod 755 ./bin/*
-
-* Now try out the repl script
-
-./bin/myproj
-
-  Clojure
-  user=> (use 'myorg.myproj.hello)
-  nil
-  user=> (main)
-  Hello from org.apache.commons.math.random:  -130262244
-  nil
-
-* Now try out pre-compilation of clojure code
-
-mvn compile
-ls classes/myorg/myproj/hello*.class
-  classes/myorg/myproj/hello$main__3084.class
-  classes/myorg/myproj/hello__init.class
+mvn install
 
 Q: How can I use this in Emacs / Slime ?
 
 > You need to update your .emacs file below your clojure / swank
-setup. I add a function that lets you pick the clojure "binary" (script).
+setup. I add a function that lets you pick the clojure project and
+it automatically configures your classpath for the project.
 
-    (defun clojure-repl (path)
-      "Set the clojure repl script and refresh slime-lisp-implementations"
-      (interactive "GPath: ")
-      (setq swank-clojure-binary path)
-      (setq slime-lisp-implementations
-            (cons `(clojure ,(swank-clojure-cmd) :init swank-clojure-init)
-                  (remove-if #'(lambda (x)
-                                 (eq (car x) 'clojure))
-                             slime-lisp-implementations))))
+(defun clj-mvn-proj (path)
+  "Setup classpaths for a maven/clojure project & refresh slime"
+  (interactive "GPath: ")
+  (setq swank-clojure-binary nil)
+  (setq swank-clojure-jar-path
+        (expand-file-name "target/dependency" path))
+  (setq swank-clojure-extra-classpaths
+        (list (expand-file-name "src" path)
+              (expand-file-name "target/classes" path)
+              (expand-file-name "target/dependency" path)))
+  (setq slime-lisp-implementations
+        (cons `(clojure ,(swank-clojure-cmd) :init swank-clojure-init)
+              (remove-if #'(lambda (x) (eq (car x) 'clojure))
+                         slime-lisp-implementations))))
 
-Now you can change your SLIME's classpath as you work on different
-modules in different SLIME sessions.  WIN!
+WIN!:   You can change your SLIME's classpath as you work on different
+        modules in different SLIME sessions.  
+
+Bonus!: Since this POM unpacks all the dependency jars into a directory
+        you can add/remove/clean/rebuild your dependencies without
+        restarting your slime session.
