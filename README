@@ -88,8 +88,9 @@ cat >src/myorg/myproj/hello.clj <<\THEEND
     (.nextInt (JDKRandomGenerator.))))
 THEEND
 
-mvn process-resources ; # <- seet target/dependencies ?!
-mvn install ; # <- see it compiled your clojure ?!
+mvn process-resources ; # <- now your are ready for emacs slime
+
+mvn install           ; # <- see it compile your clojure code
 
 Q: How can I use this in Emacs / Slime ?
 
