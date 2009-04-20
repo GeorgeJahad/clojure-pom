@@ -15,7 +15,7 @@ have access to tens of thousands of Java libraries inside Clojure
 
 * Install Maven [ http://maven.apache.org ]
 
-* Install Clojure & Clojure POM with git & maven. 
+* Install Clojure & Clojure POM with git & maven.
   You can find maven-friendly repos on my github account.
 
 git clone git://github.com/dysinger/clojure.git
@@ -54,17 +54,22 @@ cat >pom.xml <<\THEEND
     <plugins>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
-        <configuration>
-          <tasks>
-            <java fork="true"
-                  classname="clojure.lang.Compile"
-                  classpathref="maven.compile.classpath">
-              <sysproperty key="clojure.compile.path"
-                           value="${project.build.outputDirectory}" />
-              <arg value="myorg.myproj.hello" />
-            </java>
-          </tasks>
-        </configuration>
+        <executions>
+          <execution>
+            <id>compile</id>
+            <configuration>
+              <tasks>
+                <java fork="true"
+                      classname="clojure.lang.Compile"
+                      classpathref="maven.compile.classpath">
+                  <sysproperty key="clojure.compile.path"
+                               value="${project.build.outputDirectory}" />
+                  <arg value="myorg.myproj.hello" />
+                </java>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
@@ -114,7 +119,7 @@ it automatically configures your classpath for the project.
                          slime-lisp-implementations))))
 
 WIN!:   You can change your SLIME's classpath as you work on different
-        modules in different SLIME sessions.  
+        modules in different SLIME sessions.
 
 Bonus!: Since this POM unpacks all the dependency jars into a directory
         you can add/remove/clean/rebuild your dependencies without
