@@ -106,13 +106,11 @@ it automatically configures your classpath for the project.
 (defun clj-mvn-proj (path)
   "Setup classpaths for a maven/clojure project & refresh slime"
   (interactive "GPath: ")
+  (cd path)
   (setq swank-clojure-binary nil)
-  (setq swank-clojure-jar-path
-        (expand-file-name "target/dependency" path))
-  (setq swank-clojure-extra-classpaths
-        (list (expand-file-name "src" path)
-              (expand-file-name "target/classes" path)
-              (expand-file-name "target/dependency" path)))
+  (setq swank-clojure-jar-path "target/dependency")
+  (setq swank-clojure-extra-classpaths '("src" "target/classes" "target/dependency"))
+  (setq swank-clojure-extra-vm-args '("-Dclojure.compile.path=target/classes"))
   (setq slime-lisp-implementations
         (cons `(clojure ,(swank-clojure-cmd) :init swank-clojure-init)
               (remove-if #'(lambda (x) (eq (car x) 'clojure))
