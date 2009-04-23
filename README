@@ -15,7 +15,7 @@ have access to tens of thousands of Java libraries inside Clojure
 
 * Install Maven [ http://maven.apache.org ]
 
-* Install Clojure & Clojure POM with git & maven.
+* Install Clojure, Contrib & POM with git & maven.
   You can find maven-friendly repos on my github account.
 
 git clone git://github.com/dysinger/clojure.git
@@ -24,6 +24,10 @@ mvn install
 cd ..
 git clone git://github.com/dysinger/clojure-pom.git
 cd clojure-pom
+mvn install
+cd ..
+git clone git://github.com/dysinger/clojure-contrib.git
+cd clojure-contrib
 mvn install
 cd ..
 
@@ -41,20 +45,20 @@ cat >pom.xml <<\THEEND
                              http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>clojure</groupId>
+    <groupId>org.clojure</groupId>
     <artifactId>clojure-pom</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
   <groupId>myorg</groupId>
   <artifactId>myproj</artifactId>
   <name>${artifactId}</name>
-  <version>${parent.version}</version>
+  <version>1.0-SNAPSHOT</version>
   <build>
-    <!-- optional: precompile some clojure -->
     <plugins>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
+          <!-- optional: precompile some clojure -->
           <execution>
             <id>compile</id>
             <configuration>
@@ -69,12 +73,30 @@ cat >pom.xml <<\THEEND
               </tasks>
             </configuration>
           </execution>
+          <!-- optional: test-is some clojure
+          <execution>
+            <id>test</id>
+            <configuration>
+              <tasks>
+                <java classname="clojure.main" classpathref="maven.test.classpath">
+                  <arg value="-e"/>
+                  <arg value="(use 'tests) (run-all-tests)"/>
+                </java>
+              </tasks>
+            </configuration>
+          </execution>
+          -->
         </executions>
       </plugin>
     </plugins>
   </build>
   <dependencies>
     <!-- optional: 3rd party dependencies -->
+    <dependency>
+      <groupId>org.clojure</groupId>
+      <artifactId>clojure-contrib</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
     <dependency>
       <groupId>commons-math</groupId>
       <artifactId>commons-math</artifactId>
@@ -95,6 +117,7 @@ THEEND
 
 mvn process-resources ; # <- now your are ready for emacs slime
 mvn compile           ; # <- see it compile your clojure code
+mvn test              ; # <- see it test your clojure code
 mvn install           ; # <- install a jar for other components
 
 Q: How can I use this in Emacs / Slime ?
@@ -109,7 +132,7 @@ it automatically configures your classpath for the project.
   (cd path)
   (setq swank-clojure-binary nil)
   (setq swank-clojure-jar-path "target/dependency")
-  (setq swank-clojure-extra-classpaths '("src" "target/classes" "target/dependency"))
+  (setq swank-clojure-extra-classpaths '("src" "test" "target/classes" "target/dependency"))
   (setq swank-clojure-extra-vm-args '("-Dclojure.compile.path=target/classes"))
   (setq slime-lisp-implementations
         (cons `(clojure ,(swank-clojure-cmd) :init swank-clojure-init)
