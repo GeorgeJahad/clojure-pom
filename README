@@ -20,6 +20,7 @@ have access to tens of thousands of Java libraries inside Clojure
 
 git clone git://github.com/dysinger/clojure.git
 cd clojure
+git checkout 1.0
 mvn install
 cd ..
 
