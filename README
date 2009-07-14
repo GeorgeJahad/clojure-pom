@@ -15,24 +15,19 @@ have access to tens of thousands of Java libraries inside Clojure
 
 * Install Maven [ http://maven.apache.org ]
 
-* Install Clojure, Contrib & POM with git & maven.
+* Install Clojure Contrib & POM with git & maven.
   You can find maven-friendly repos on my github account.
 
-git clone git://github.com/dysinger/clojure.git
-cd clojure
-git checkout 1.0.0
-mvn install
-cd ..
+NOTE: Clojure 1.0.0 is now on the maven repos officially
 
 git clone git://github.com/dysinger/clojure-pom.git
 cd clojure-pom
-git checkout 1.0.0
 mvn install
 cd ..
 
 git clone git://github.com/dysinger/clojure-contrib.git
 cd clojure-contrib
-git checkout 1.0.0
+git checkout -b 1.0-SNAPSHOT origin/1.0-SNAPSHOT
 mvn install
 cd ..
 
@@ -101,7 +96,7 @@ cat >pom.xml <<\THEEND
     <dependency>
       <groupId>org.clojure</groupId>
       <artifactId>clojure-contrib</artifactId>
-      <version>1.0.0</version>
+      <version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>commons-math</groupId>
@@ -124,38 +119,12 @@ THEEND
 mvn process-resources ; # <- now your are ready for emacs slime
 mvn compile           ; # <- see it compile your clojure code
 mvn test              ; # <- see it test your clojure code
-mvn install           ; # <- install a jar for other components
-mvn assembly:assembly ; # <- build one big jar
+mvn install           ; # <- install a jar for dependant projects (default)
+mvn assembly:assembly ; # <- build one big jar for easy deploys
 
-Q: How can I use this in Emacs / Slime ?
+Q: How can I use this in Emacs & Slime ?
 
-> You need to update your .emacs file below your clojure / swank
-setup. I add a function that lets you pick the clojure project and
-it automatically configures your classpath for the project.
-
-(defun slime-project (path)
-  "Setup classpaths for a maven/clojure project & refresh slime"
-  (interactive "GPath: ")
-  (when (get-buffer "*inferior-lisp*")
-    (kill-buffer "*inferior-lisp*"))
-  (setq swank-clojure-binary nil
-        swank-clojure-jar-path (expand-file-name "target/dependency/" path)
-        swank-clojure-extra-classpaths
-        (mapcar (lambda (d) (expand-file-name d path))
-                '("src/" "target/classes/" "test/"))
-        swank-clojure-extra-vm-args
-        (list (format "-Dclojure.compile.path=%s"
-                      (expand-file-name "target/classes/" path)))
-        slime-lisp-implementations
-        (cons `(clojure ,(swank-clojure-cmd) :init swank-clojure-init)
-              (remove-if #'(lambda (x) (eq (car x) 'clojure))
-                         slime-lisp-implementations)))
-  (save-window-excursion
-    (slime)))
-
-WIN!:   You can change your SLIME's classpath as you work on different
-        modules in different SLIME sessions.
-
-Bonus!: Since this POM unpacks all the dependency jars into a directory
-        you can add/remove/clean/rebuild your dependencies without
-        restarting your slime session.
+> Most of us use emacs 23 (trunk) and slime (trunk) with
+Philip Hagelberg's emacs-starter-kit.  I won't cover all that here.
+It's on github.  http://github.com/technomancy/emacs-starter-kit
+Ask about setup particulars on IRC.  It's rapidly evolving.
